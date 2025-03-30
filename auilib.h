@@ -1,8 +1,6 @@
-#ifndef AUILIB_H
-#define AUILIB_H
+#pragma once
 
 #include "HBoxContainer.h"
 #include "VBoxContainer.h"
 #include "BarIndicator.h"
-
-#endif //AUILIB_H
+#include "ImgButton.h"
