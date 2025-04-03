@@ -27,6 +27,9 @@ namespace aui {
 			this->width = width + edgeW * 2;
 			this->height = height + edgeH * 2;
 		}
+		ImgButton(const ImgButton& other) : gui::Button(other), tex(other.tex), edgeW(other.edgeW), edgeH(other.edgeH) {}
+		ImgButton(ImgButton&& other) : gui::Button(other), tex(std::move(other.tex)), edgeW(std::move(other.edgeW)), edgeH(std::move(other.edgeH)) {}
+
 
 		void render(Window* w) override {
 			if (!visible) return;
