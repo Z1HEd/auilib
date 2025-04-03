@@ -12,6 +12,7 @@ namespace aui {
 	public:
 		TexRenderer tex;
 
+		bool visible = true;
 		int edgeW = 1;
 		int edgeH = 1;
 
@@ -28,6 +29,8 @@ namespace aui {
 		}
 
 		void render(Window* w) override {
+			if (!visible) return;
+
 			Button::render(w);
 
 			int x, y;

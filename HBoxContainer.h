@@ -13,6 +13,8 @@ namespace aui {
 		gui::Element* selectedElem;
 		std::vector<gui::Element*> elements{};
 		QuadRenderer& background = Item::qr;
+
+		bool visible = true;
 		uint32_t width = 100;
 		uint32_t height = 100;
 
@@ -52,7 +54,8 @@ namespace aui {
 
 		void render(gui::Window* w) override
 		{
-			
+			if (!visible) return;
+
 			int Height = 0;
 			int Width = 0;
 			width = 0;

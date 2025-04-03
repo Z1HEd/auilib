@@ -8,8 +8,16 @@ namespace aui {
 
 	class BarIndicator : public gui::Element
 	{
-	public:
-		
+	public: 
+		enum fillDirection {
+			LEFT_TO_RIGHT = 0,
+			BOTTOM_TO_TOP = LEFT_TO_RIGHT,
+			CENTER_TO_SIDES = 1,
+			RIGHT_TO_LEFT = 2,
+			TOP_TO_BOTTOM = RIGHT_TO_LEFT
+		};
+
+		bool visible = true;
 		bool showFractionLines = false;
 		bool isHorizontal = true;
 		int width, height;
@@ -25,7 +33,7 @@ namespace aui {
 		glm::vec4 fillColor;
 		glm::vec4 outlineColor;
 		glm::vec4 fractionLineColor;
-		QuadRenderer& renderer = Item::qr;
+		
 		gui::Text text{};
 
 		bool showText = false;
@@ -35,16 +43,19 @@ namespace aui {
 
 		void render(gui::Window* w) override
 		{
+			QuadRenderer* renderer = w->getQuadRenderer();
+
+			if (!visible) return;
 			if (!isHorizontal) { // Vectical mode
 				switch (fillDirection) {
-				case 0: //down to up
-					renderer.setPos(xOffset, height - height * fillFraction + yOffset, width, height * fillFraction);
+				case BOTTOM_TO_TOP:
+					renderer->setPos(xOffset, height*1.5 - height * fillFraction + yOffset, width, height * fillFraction);
 					break;
-				case 1: //center to the sides
-					renderer.setPos(xOffset, height / 2 - height * fillFraction / 2 + yOffset, width, height * fillFraction);
+				case CENTER_TO_SIDES:
+					renderer->setPos(xOffset, height / 2 - height * fillFraction / 2 + yOffset, width, height * fillFraction);
 					break;
-				case 2: //up to down 
-					renderer.setPos(xOffset, yOffset, width, height * fillFraction);
+				case TOP_TO_BOTTOM:
+					renderer->setPos(xOffset, yOffset, width, height * fillFraction);
 					break;
 				}
 				int textWidth, textHeight;
@@ -65,28 +76,29 @@ namespace aui {
 				}
 				
 
-				renderer.setQuadRendererMode(GL_TRIANGLES);
-				renderer.setColor(fillColor.r, fillColor.g, fillColor.b, fillColor.a);
-				renderer.render();
+				renderer->setQuadRendererMode(GL_TRIANGLES);
+				renderer->setColor(fillColor.r, fillColor.g, fillColor.b, fillColor.a);
+				renderer->render();
 
-				renderer.setPos(xOffset, height / 2 + yOffset, width, height);
-				renderer.setQuadRendererMode(GL_LINE_LOOP);
-				renderer.setColor(outlineColor.r, outlineColor.g, outlineColor.b, outlineColor.a);
-				renderer.render();
+				renderer->setPos(xOffset, height / 2 + yOffset, width, height-1);
+				renderer->setQuadRendererMode(GL_LINE_LOOP);
+				renderer->setColor(outlineColor.r, outlineColor.g, outlineColor.b, outlineColor.a);
+				renderer->render();
 
-				text.render(w);
+				if (showText)
+					text.render(w);
 			}
 			else  // Horizontal mode
 			{
 				switch (fillDirection) {
-				case 0: //left to right
-					renderer.setPos(xOffset ,yOffset, width * fillFraction, height );
+				case LEFT_TO_RIGHT:
+					renderer->setPos(xOffset ,yOffset, width * fillFraction, height );
 					break;
-				case 1: //center to the sides
-					renderer.setPos(width/2 + xOffset - width * fillFraction/2,yOffset, width * fillFraction, height);
+				case CENTER_TO_SIDES:
+					renderer->setPos(width/2 + xOffset - width * fillFraction/2,yOffset, width * fillFraction, height);
 					break;
-				case 2: //right to left
-					renderer.setPos(width + xOffset - width * fillFraction,yOffset, width*fillFraction, height);
+				case RIGHT_TO_LEFT:
+					renderer->setPos(width + xOffset - width * fillFraction,yOffset, width*fillFraction, height);
 					break;
 				}
 
@@ -109,25 +121,26 @@ namespace aui {
 				}
 				
 				
-				renderer.setQuadRendererMode(GL_TRIANGLES);
-				renderer.setColor(fillColor.r, fillColor.g, fillColor.b, fillColor.a);
-				renderer.render();
+				renderer->setQuadRendererMode(GL_TRIANGLES);
+				renderer->setColor(fillColor.r, fillColor.g, fillColor.b, fillColor.a);
+				renderer->render();
 				
 				if (showFractionLines) {
 					for (int i = 1;i < fractionLineCount;i++) {
-						renderer.setPos(xOffset+i*width/fractionLineCount, yOffset, 1, height);
-						renderer.setQuadRendererMode(GL_LINE_LOOP);
-						renderer.setColor(fractionLineColor.r, fractionLineColor.g, fractionLineColor.b, fractionLineColor.a);
-						renderer.render();
+						renderer->setPos(xOffset+i*width/fractionLineCount, yOffset, 1, height);
+						renderer->setQuadRendererMode(GL_LINE_LOOP);
+						renderer->setColor(fractionLineColor.r, fractionLineColor.g, fractionLineColor.b, fractionLineColor.a);
+						renderer->render();
 					}
 				}
 
-				renderer.setPos(xOffset, yOffset, width, height);
-				renderer.setQuadRendererMode(GL_LINE_LOOP);
-				renderer.setColor(outlineColor.r, outlineColor.g, outlineColor.b, outlineColor.a);
-				renderer.render();
-
-				text.render(w);
+				renderer->setPos(xOffset, yOffset, width, height);
+				renderer->setQuadRendererMode(GL_LINE_LOOP);
+				renderer->setColor(outlineColor.r, outlineColor.g, outlineColor.b, outlineColor.a);
+				renderer->render();
+				
+				if (showText)
+					text.render(w);
 			}
 		}
 
