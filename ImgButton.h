@@ -17,8 +17,8 @@ namespace aui {
 		int edgeH = 1;
 
 		ImgButton() {}
-		ImgButton(const std::string& imagePath, int width = 0, int height = 0, int edgeW = 1, int edgeH = 1) : edgeW(edgeW), edgeH(edgeH) {
-			tex.texture = ResourceManager::get(imagePath);
+		ImgButton(const Tex2D* texture, int width = 0, int height = 0, int edgeW = 1, int edgeH = 1) : edgeW(edgeW), edgeH(edgeH) {
+			tex.texture = texture;
 			tex.shader = ShaderManager::get("tex2DShader");
 			tex.init();
 			tex.setClip(0, 0, tex.texture->width, tex.texture->height);
@@ -27,7 +27,7 @@ namespace aui {
 			this->width = width + edgeW * 2;
 			this->height = height + edgeH * 2;
 		}
-		ImgButton(const ImgButton& other) : gui::Button(other), tex(other.tex), edgeW(other.edgeW), edgeH(other.edgeH) {}
+
 		ImgButton(ImgButton&& other) : gui::Button(other), tex(std::move(other.tex)), edgeW(std::move(other.edgeW)), edgeH(std::move(other.edgeH)) {}
 
 
