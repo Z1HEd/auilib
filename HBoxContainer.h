@@ -12,7 +12,7 @@ namespace aui {
 		int currentCursorType = GLFW_ARROW_CURSOR;
 		gui::Element* selectedElem;
 		std::vector<gui::Element*> elements{};
-		QuadRenderer& background = Item::qr;
+		
 
 		bool visible = true;
 		uint32_t width = 100;
@@ -55,6 +55,9 @@ namespace aui {
 		void render(gui::Window* w) override
 		{
 			if (!visible) return;
+			if (elements.size() < 1) return;
+
+			QuadRenderer* backgroundRenderer = w->getQuadRenderer();
 
 			int Height = 0;
 			int Width = 0;
@@ -71,8 +74,9 @@ namespace aui {
 					Height = text->size * 7;
 
 				if (Height > height) height = Height;
-				width += Width+ xSpacing;
+				width += Width;
 			}
+			width += xSpacing * (elements.size() - 1);
 
 			//Set position of the box
 			w->getSize(&Width, &Height);
@@ -142,14 +146,14 @@ namespace aui {
 			
 			//Render stuff
 			if (renderBackground) {
-				background.setPos(xPos+xOffset + xPadding, yPos + yOffset + yPadding, width - xPadding * 2, height - yPadding * 2);
-				background.setQuadRendererMode(GL_TRIANGLES);
-				background.setColor(0, 0, 0, 0.5);
-				background.render();
+				backgroundRenderer->setPos(xPos+xOffset + xPadding, yPos + yOffset + yPadding, width - xPadding * 2, height - yPadding * 2);
+				backgroundRenderer->setQuadRendererMode(GL_TRIANGLES);
+				backgroundRenderer->setColor(0, 0, 0, 0.5);
+				backgroundRenderer->render();
 
-				background.setQuadRendererMode(GL_LINE_LOOP);
-				background.setColor(1, 1, 1, 0.5);
-				background.render();
+				backgroundRenderer->setQuadRendererMode(GL_LINE_LOOP);
+				backgroundRenderer->setColor(1, 1, 1, 0.5);
+				backgroundRenderer->render();
 			}
 
 			for (int i = 0;i < elements.size();i++) {

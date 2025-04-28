@@ -12,7 +12,6 @@ namespace aui {
 		int currentCursorType = GLFW_ARROW_CURSOR;
 		gui::Element* selectedElem;
 		std::vector<gui::Element*> elements{};
-		QuadRenderer& background = Item::qr;
 
 		bool visible = true;
 		uint32_t width = 0;
@@ -51,11 +50,16 @@ namespace aui {
 		gui::AlignmentX elementXAlign = gui::ALIGN_LEFT;
 
 		bool renderBackground = false;
+		glm::vec4 backgroundColor = { 0,0,0,0.5 };
+		glm::vec4 outlineColor = { 1,1,1,0.5 };
 
 		void render(gui::Window* w) override
 		{
 			if (!visible) return;
 			if (elements.size() < 1) return;
+
+			QuadRenderer* backgroundRenderer = w->getQuadRenderer();
+
 			int Height = 0;
 			int Width = 0;
 			width = 0;
@@ -70,8 +74,10 @@ namespace aui {
 					Height = text->size * 7;
 
 				if (Width > width) width = Width;
-				height += Height + ySpacing;
+				height += Height;
 			}
+
+			height += ySpacing * (elements.size() - 1);
 
 			w->getSize(&Width, &Height);
 			width += xMargin*2;
@@ -139,14 +145,14 @@ namespace aui {
 			
 			//Render stuff
 			if (renderBackground) {
-				background.setPos(xPos+xOffset + xPadding,yPos+ yOffset + yPadding, width - xPadding * 2, height - yPadding * 2);
-				background.setQuadRendererMode(GL_TRIANGLES);
-				background.setColor(0, 0, 0, 0.5);
-				background.render();
+				backgroundRenderer->setPos(xPos+xOffset + xPadding,yPos+ yOffset + yPadding, width - xPadding * 2, height - yPadding * 2);
+				backgroundRenderer->setQuadRendererMode(GL_TRIANGLES);
+				backgroundRenderer->setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
+				backgroundRenderer->render();
 
-				background.setQuadRendererMode(GL_LINE_LOOP);
-				background.setColor(1, 1, 1, 0.5);
-				background.render();
+				backgroundRenderer->setQuadRendererMode(GL_LINE_LOOP);
+				backgroundRenderer->setColor(outlineColor.r, outlineColor.g, outlineColor.b, outlineColor.a);
+				backgroundRenderer->render();
 			}
 			
 			for (int i = 0;i < elements.size();i++) {
@@ -205,7 +211,10 @@ namespace aui {
 				}
 			}
 
-			return false;
+			return (xpos> xPos + xOffset + xPadding) && 
+				(xpos< xPos + xOffset + xPadding+( width - xPadding * 2)) &&
+				(ypos > yPos + yOffset + yPadding) &&
+				(ypos < yPos + yOffset + yPadding + (height - yPadding * 2));
 		}
 		bool mouseButtonInput(const gui::Window* w, int button, int action, int mods) override
 		{
@@ -221,7 +230,12 @@ namespace aui {
 					return true;
 				}
 			}
-			
+			double mouseX, mouseY;
+			glfwGetCursorPos(w->getGLFWwindow(), &mouseX, &mouseY);
+			return (mouseX > xPos + xOffset + xPadding) &&
+				(mouseX < xPos + xOffset + xPadding + (width - xPadding * 2)) &&
+				(mouseY > yPos + yOffset + yPadding) &&
+				(mouseY < yPos + yOffset + yPadding + (height - yPadding * 2));
 		}
 		void select() override 
 		{ 
