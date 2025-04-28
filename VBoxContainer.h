@@ -14,11 +14,11 @@ namespace aui {
 		std::vector<gui::Element*> elements{};
 
 		bool visible = true;
-		uint32_t width = 0;
-		uint32_t height = 0;
+		int width = 0;
+		int height = 0;
 
 		//  If >1 will try to arrange to multiple columns if possible
-		unsigned int maxColumns = 1;
+		int maxColumns = 1;
 
 		// "Actual" topleft position of the box
 		int xPos = 0;

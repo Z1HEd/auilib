@@ -15,11 +15,11 @@ namespace aui {
 		
 
 		bool visible = true;
-		uint32_t width = 100;
-		uint32_t height = 100;
+		int width = 100;
+		int height = 100;
 
 		//  If >1 will try to arrange to multiple rows if possible
-		unsigned int maxRows = 1;
+		int maxRows = 1;
 
 		// "Actual" topleft position of the box
 		int xPos = 0;
