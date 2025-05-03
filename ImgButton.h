@@ -29,6 +29,16 @@ namespace aui {
 		}
 
 		ImgButton(ImgButton&& other) : gui::Button(other), tex(std::move(other.tex)), edgeW(std::move(other.edgeW)), edgeH(std::move(other.edgeH)) {}
+		ImgButton& operator=(ImgButton&& other) noexcept {
+			if (this != &other) {
+				gui::Button::operator=(std::move(other));
+
+				tex = std::move(other.tex);
+				edgeW = std::move(other.edgeW);
+				edgeH = std::move(other.edgeH);
+			}
+			return *this;
+		}
 
 
 		void render(Window* w) override {
