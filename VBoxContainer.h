@@ -175,14 +175,17 @@ namespace aui {
 
 		void addElement(gui::Element* e) override
 		{
+			if (hasElement(e))return;
 			elements.push_back(e);
 		}
 		void addElement(gui::Element* e, int pos)
 		{
+			if (hasElement(e))return;
 			elements.insert(elements.begin()+pos,e);
 		}
 		bool removeElement(gui::Element* e) override
 		{
+			if (!hasElement(e))return false;
 			return elements.erase(std::remove(elements.begin(), elements.end(), e), elements.end()) != elements.end();
 		}
 		void clear() override
